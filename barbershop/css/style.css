@@ -1,0 +1,129 @@
+/* --- Gaya Umum --- */
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #fff8f0;
+  background-image: url('images.png');
+  color: #333;
+}
+
+/* --- Header --- */
+.header {
+  background: #111;
+  color: white;
+  padding: 15px 0;
+}
+
+.container {
+  width: 90%;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 28px;
+  color: #ffb400;
+}
+
+.logo span {
+  color: white;
+}
+
+.navbar a {
+  color: white;
+  margin-left: 20px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.navbar a:hover {
+  color: #ffb400;
+}
+
+.btn-login {
+  background: #ffb400;
+  padding: 8px 15px;
+  border-radius: 5px;
+  color: #111;
+  font-weight: bold;
+}
+
+/* --- Hero Section --- */
+.hero {
+  background: url('../images/barber-bg.jpg') center/cover no-repeat;
+  height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+  background-blend-mode: overlay;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.hero h2 {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.btn {
+  background: #ffb400;
+  color: #111;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background: #ff9100;
+}
+
+/* --- Services --- */
+.services-preview {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.service-list {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 25px;
+}
+
+.service-item {
+  width: 280px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 15px;
+}
+
+.service-item img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.service-item h4 {
+  margin-top: 10px;
+  color: #ffb400;
+}
+
+/* --- Footer --- */
+footer {
+  background: #111;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 50px;
+}
