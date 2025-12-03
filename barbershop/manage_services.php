@@ -1,225 +1,149 @@
 
-    <?php
+ <?php
 session_start();
 include 'koneksi.php';
 
-// Cek login & level admin
 if(!isset($_SESSION['username']) || $_SESSION['level'] != 'admin'){
     header("Location: login.php?pesan=gagal");
     exit();
 }
 
-// Hapus layanan
+// HAPUS LAYANAN
 if(isset($_GET['hapus_id'])){
     $hapus_id = intval($_GET['hapus_id']);
-    mysqli_query($koneksi, "DELETE FROM services WHERE id=$hapus_id");
-    header("Location: manage_services.php");
+    mysqli_query($koneksi,"DELETE FROM services WHERE id=$hapus_id");
+    header("Location: manage_services_modal.php");
     exit();
 }
 
-// Tambah layanan
-if(isset($_POST['tambah'])){
-    $nama = mysqli_real_escape_string($koneksi, $_POST['nama']);
-    $deskripsi = mysqli_real_escape_string($koneksi, $_POST['deskripsi']);
+// TAMBAH / EDIT LAYANAN (tanpa gambar)
+if(isset($_POST['save_service'])){
+    $sid = intval($_POST['sid']);
+    $nama = mysqli_real_escape_string($koneksi,$_POST['nama']);
+    $deskripsi = mysqli_real_escape_string($koneksi,$_POST['deskripsi']);
     $harga = floatval($_POST['harga']);
 
-    // Upload gambar
-    $gambar = "";
-    if(isset($_FILES['gambar']) && $_FILES['gambar']['error'] === 0){
-        $folder = "uploads/";
-        if(!is_dir($folder)) mkdir($folder);
-        $gambar = $folder . time() . "_" . basename($_FILES['gambar']['name']);
-        move_uploaded_file($_FILES['gambar']['tmp_name'], $gambar);
+    if($sid > 0){
+        mysqli_query($koneksi,"UPDATE services SET nama='$nama', deskripsi='$deskripsi', harga='$harga' WHERE id=$sid");
+    } else {
+        mysqli_query($koneksi,"INSERT INTO services(nama,deskripsi,harga) VALUES('$nama','$deskripsi','$harga')");
     }
 
-    mysqli_query($koneksi, "INSERT INTO services (nama, deskripsi, harga, gambar) VALUES ('$nama','$deskripsi','$harga','$gambar')");
-    header("Location: manage_services.php");
+    header("Location: manage_services_modal.php");
     exit();
 }
 
-// Ambil data layanan
-$result = mysqli_query($koneksi, "SELECT * FROM services ORDER BY id DESC");
+$result = mysqli_query($koneksi,"SELECT * FROM services ORDER BY id DESC");
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Manajemen Layanan</title>
-
+<title>Manajemen Layanan - Modal CRUD + Print</title>
 <style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #121212;
-        color: #EAEAEA;
-    }
+body {font-family:Arial;margin:0;background:#121212;color:#EAEAEA;}
+.container{padding:20px;}
+h1{margin-bottom:20px;color:#EAEAEA;}
+table{width:100%;border-collapse:collapse;margin-top:15px;}
+th,td{padding:12px;border:1px solid #2A2A2A;text-align:left;}
+th{background:#1F3A93;color:#fff;}
+tr:hover{background:#1F1F1F;}
+.button{background:#3C6FFF;padding:6px 12px;color:white;border-radius:5px;text-decoration:none;cursor:pointer;border:none;}
+.button:hover{opacity:.8;}
+.hapus{background:red;}
+.hapus:hover{opacity:.8;}
 
-    /* SIDEBAR */
-    .sidebar {
-        width: 230px;
-        height: 100vh;
-        position: fixed;
-        background: #0A0A0A;
-        border-right: 6px solid #1F3A93;
-        padding-top: 20px;
-    }
-    .sidebar h2 {
-        text-align: center;
-        color: #3C6FFF;
-        margin-bottom: 30px;
-    }
-    .sidebar a {
-        display: block;
-        padding: 15px 20px;
-        color: #EAEAEA;
-        text-decoration: none;
-        border-left: 3px solid transparent;
-        transition: 0.3s;
-    }
-    .sidebar a:hover {
-        background: #1F1F1F;
-        border-left: 3px solid #3C6FFF;
-    }
+/* MODAL */
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);justify-content:center;align-items:center;}
+.modal-content{background:#1E1E1E;padding:20px;border-radius:10px;width:400px;position:relative;}
+.close{position:absolute;top:10px;right:15px;font-size:22px;color:#fff;cursor:pointer;}
+input,textarea{width:100%;padding:10px;margin-bottom:10px;border-radius:5px;border:1px solid #333;background:#0F0F0F;color:#EAEAEA;}
+input[type=submit]{background:#3C6FFF;border:none;cursor:pointer;}
 
-    /* CONTENT */
-    .content {
-        margin-left: 250px;
-        padding: 25px;
-    }
-
-    .card {
-        background: #1E1E1E;
-        padding: 20px;
-        border-radius: 10px;
-        margin-bottom: 25px;
-        box-shadow: 0 0 10px rgba(0,0,0,.3);
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 15px;
-    }
-    th, td {
-        padding: 12px;
-        border: 1px solid #2A2A2A;
-    }
-    th {
-        background: #1F3A93;
-    }
-    tr:hover {
-        background: #1F1F1F;
-    }
-
-    img {
-        width: 80px;
-        border-radius: 5px;
-    }
-
-    .hapus {
-        background: red;
-        padding: 6px 10px;
-        color: white;
-        border-radius: 5px;
-        text-decoration: none;
-    }
-    .hapus:hover {
-        background: #CC0000;
-    }
-
-    form input, form textarea {
-        width: 100%;
-        padding: 10px;
-        background: #0F0F0F;
-        border: 1px solid #333;
-        border-radius: 5px;
-        color: #EAEAEA;
-        margin-bottom: 15px;
-    }
-
-    form input[type=submit] {
-        background: #3C6FFF;
-        cursor: pointer;
-        border: none;
-    }
+/* CSS khusus untuk Print */
+@media print {
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .button, .hapus, .modal, .no-print {
+    display: none !important;
+  }
+  table {
+    width: 100% !important;
+    border: 1px solid #000;
+    border-collapse: collapse;
+  }
+  th, td {
+    border: 1px solid #000 !important;
+    color: #000 !important;
+  }
+}
 </style>
 </head>
-
 <body>
+<div class="container">
+  <h1>Manajemen Layanan</h1>
 
-<div class="sidebar">
-    <h2>BarberBro</h2>
-    <a href="dashboard_admin.php">Dashboard</a>
-    <a href="manage_users.php">Manajemen User</a>
-    <a href="manage_services.php">Manajemen Layanan</a>
-    <a href="manage_booking.php">Data Booking</a>
-    <a href="logout.php">Logout</a>
+  <!-- Tombol Print + Tambah -->
+  <button class="button no-print" onclick="window.print()"> Print Layanan</button>
+  <button class="button no-print" onclick="openModal()">+ Tambah Layanan</button>
+
+  <table>
+    <tr><th>ID</th><th>Nama</th><th>Deskripsi</th><th>Harga</th><th>Aksi</th></tr>
+    <?php while($s = mysqli_fetch_assoc($result)): ?>
+    <tr>
+      <td><?= $s['id'] ?></td>
+      <td><?= htmlspecialchars($s['nama']) ?></td>
+      <td><?= htmlspecialchars($s['deskripsi']) ?></td>
+      <td>Rp <?= number_format($s['harga'],0,",",".") ?></td>
+      <td>
+        <button class="button no-print" onclick='openModal(<?= json_encode($s) ?>)'>Edit</button>
+        <a class="button hapus no‑print" href="?hapus_id=<?= $s['id'] ?>" onclick="return confirm('Hapus layanan ini?')">Hapus</a>
+      </td>
+    </tr>
+    <?php endwhile; ?>
+  </table>
 </div>
 
-<div class="content">
-    
-    <h1>Manajemen Layanan BarberBro</h1>
-
-    <!-- DATA LAYANAN -->
-    <div class="card">
-        <h2>Daftar Layanan</h2>
-
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Nama</th>
-                <th>Deskripsi</th>
-                <th>Harga</th>
-                <th>Gambar</th>
-                <th>Aksi</th>
-            </tr>
-
-            <?php while($s = mysqli_fetch_assoc($result)): ?>
-            <tr>
-                <td><?= $s['id'] ?></td>
-                <td><?= htmlspecialchars($s['nama']) ?></td>
-                <td><?= htmlspecialchars($s['deskripsi']) ?></td>
-                <td>Rp <?= number_format($s['harga'], 0, ",", ".") ?></td>
-
-                <td>
-                    <?php if($s['gambar']): ?>
-                        <img src="<?= $s['gambar'] ?>" alt="gambar">
-                    <?php else: ?>
-                        <i style="color:#777">Tidak ada</i>
-                    <?php endif ?>
-                </td>
-
-                <td>
-                    <a class="hapus" href="?hapus_id=<?= $s['id'] ?>" onclick="return confirm('Hapus layanan ini?')">
-                        Hapus
-                    </a>
-                </td>
-            </tr>
-            <?php endwhile ?>
-        </table>
-    </div>
-
-    <!-- FORM TAMBAH -->
-    <div class="card">
-        <h2>Tambah Layanan Baru</h2>
-
-        <form method="post" enctype="multipart/form-data">
-            <label>Nama Layanan:</label>
-            <input type="text" name="nama" required>
-
-            <label>Deskripsi:</label>
-            <textarea name="deskripsi" required></textarea>
-
-            <label>Harga (Rp):</label>
-            <input type="number" name="harga" required>
-
-            <label>Gambar:</label>
-            <input type="file" name="gambar" accept="image/*">
-
-            <input type="submit" name="tambah" value="Tambah Layanan">
-        </form>
-    </div>
+<!-- MODAL FORM -->
+<div class="modal no-print" id="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2 id="modalTitle" style="color:#EAEAEA;">Tambah Layanan</h2>
+    <form method="post">
+      <input type="hidden" name="sid" id="sid" value="0">
+      <label style="color:#EAEAEA;">Nama Layanan:</label>
+      <input type="text" name="nama" id="nama" required>
+      <label style="color:#EAEAEA;">Deskripsi:</label>
+      <textarea name="deskripsi" id="deskripsi" required></textarea>
+      <label style="color:#EAEAEA;">Harga (Rp):</label>
+      <input type="number" name="harga" id="harga" required>
+      <input type="submit" name="save_service" value="Simpan" class="button">
+    </form>
+  </div>
 </div>
 
+<script>
+function openModal(data = null){
+  document.getElementById('modal').style.display = 'flex';
+  if(data){
+    document.getElementById('modalTitle').innerText = 'Edit Layanan';
+    document.getElementById('sid').value = data.id;
+    document.getElementById('nama').value = data.nama;
+    document.getElementById('deskripsi').value = data.deskripsi;
+    document.getElementById('harga').value = data.harga;
+  } else {
+    document.getElementById('modalTitle').innerText = 'Tambah Layanan';
+    document.getElementById('sid').value = 0;
+    document.getElementById('nama').value = '';
+    document.getElementById('deskripsi').value = '';
+    document.getElementById('harga').value = '';
+  }
+}
+function closeModal(){
+  document.getElementById('modal').style.display = 'none';
+}
+</script>
 </body>
 </html>

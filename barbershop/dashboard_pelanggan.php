@@ -192,7 +192,6 @@ header .logout:hover {
 </style>
 </head>
 <body>
-
 <header>
   <h1>💈 BarberShop</h1>
   <a href="?logout=true" class="logout">Logout</a>
@@ -207,7 +206,7 @@ header .logout:hover {
   <h3>Layanan Kami</h3>
   <div class="service-grid">
     <div class="service-card">
-      <img src="haircut.jpg" alt="Haircut Modern">
+      <img src="hairrcut.jpg" alt="Haircut Modern">
       <h4>Haircut Modern</h4>
       <p>Gaya rambut klasik hingga kekinian.</p>
     </div>
@@ -241,6 +240,7 @@ header .logout:hover {
 
 <section class="history">
   <h3>Riwayat Pesanan</h3>
+
   <table>
     <tr>
       <th>No</th>
@@ -248,7 +248,9 @@ header .logout:hover {
       <th>Tanggal</th>
       <th>Jam</th>
       <th>Status</th>
+      <th>Nota</th>
     </tr>
+    
     <tr>
       <td>1</td>
       <td>Haircut Modern</td>
@@ -263,6 +265,42 @@ header .logout:hover {
       <td>14:00</td>
       <td>Menunggu</td>
     </tr>
+
+    <?php
+    include 'koneksi.php';
+    $user = $_SESSION['username'];
+
+    $no = 1;
+    $query = mysqli_query($koneksi, "
+        SELECT b.id, b.layanan_id, b.tanggal, b.jam, b.status, 
+               s.nama AS layanan
+        FROM bookings b
+        JOIN services s ON b.layanan_id = s.id
+        WHERE b.nama_customer = '$user'
+        ORDER BY b.id DESC
+    ");
+
+    while($row = mysqli_fetch_assoc($query)):
+    ?>
+    <tr>
+        <td><?php echo $no++; ?></td>
+        <td><?php echo $row['layanan']; ?></td>
+        <td><?php echo $row['tanggal']; ?></td>
+        <td><?php echo $row['jam']; ?></td>
+        <td><?php echo ucfirst($row['status']); ?></td>
+
+        <td>
+            <?php if($row['status'] == 'selesai'): ?>
+                <a href="nota.php?id=<?php echo $row['id']; ?>" target="_blank"
+                   style="background:#e6b800; padding:6px 10px; border-radius:6px; text-decoration:none; color:#111;">
+                    Nota
+                </a>
+            <?php else: ?>
+                -
+            <?php endif; ?>
+        </td>
+    </tr>
+    <?php endwhile; ?>
   </table>
 </section>
 

@@ -18,7 +18,7 @@ if(isset($_POST['username'], $_POST['password'])){
             if($data['level']=='admin') header("Location: dashboard_admin.php");
             elseif($data['level']=='pegawai') header("Location: dashboard_pegawai.php");
             elseif($data['level']=='kasir') header("Location: dashboard_kasir.php");
-            }elseif($data['level']=='pelanggan') {header("Location: dashboard.php");
+            }elseif($data['level']=='pelanggan') {header("Location: dashboard_pelanggan.php");
             exit();
         } else {
             echo "Password salah!";
@@ -36,47 +36,74 @@ if(isset($_POST['username'], $_POST['password'])){
 <title>Login Barbershop</title>
 <style>
     body {
-        font-family: Arial, sans-serif;
-        background: linear-gradient(to right, #ffecd2, #fcb69f);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-    }
-    .login-container {
-        background: #fff;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        width: 350px;
-        text-align: center;
-    }
-    h2 { margin-bottom: 20px; color: #ff5c5c; }
-    input[type="text"], input[type="password"] {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 15px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-    }
-    button {
-        background: #ff5c5c;
-        color: white;
-        border: none;
-        padding: 12px 20px;
-        border-radius: 8px;
-        cursor: pointer;
-        width: 100%;
-        font-weight: bold;
-    }
-    button:hover {
-        background: #ff1a1a;
-    }
-    .error {
-        color: red;
-        margin-bottom: 10px;
-    }
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #0a0f24, #0d1b2a, #1b263b);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Container Login */
+.login-container {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 35px;
+    border-radius: 15px;
+    width: 350px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+    text-align: center;
+    backdrop-filter: blur(4px);
+}
+
+/* Judul */
+h2 {
+    color: #4da8da;
+    margin-bottom: 25px;
+    font-weight: bold;
+}
+
+/* Input */
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 18px;
+    border-radius: 8px;
+    border: 1px solid #1b263b;
+    background: #0d1b2a;
+    color: #e0e0e0;
+    font-size: 14px;
+}
+
+input::placeholder {
+    color: #8fa3bf;
+}
+
+/* Tombol */
+button {
+    background: #1e90ff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: bold;
+    font-size: 15px;
+    transition: 0.3s ease;
+}
+
+button:hover {
+    background: #187bcd;
+    transform: translateY(-2px);
+}
+
+/* Error */
+.error {
+    color: #ff4d4d;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
 </style>
 </head>
 <body>

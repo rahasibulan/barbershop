@@ -1,163 +1,48 @@
 <?php
-// services.php
-?>
+include "config/database.php";
 
+// Ambil semua layanan dari database
+$query = mysqli_query($conn, "SELECT * FROM services ORDER BY id DESC");
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Layanan Kami - Barbershop</title>
+
+  <!-- CSS sama seperti versi kamu -->
   <style>
-    /* ==========================
-       Reset & Base
-    =========================== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    body {
-      background: #f5f5f5;
-      color: #333;
-      line-height: 1.6;
-    }
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI', Tahoma;}
+    body{background:#f5f5f5;color:#333;line-height:1.6;}
+    .header{background:#111;color:#fff;padding:15px 20px;display:flex;justify-content:space-between;align-items:center;}
+    .header .logo{font-size:28px;}
+    .header .logo span{color:#e6b800;}
+    .navbar a{color:#fff;margin-left:20px;}
+    .navbar a:hover{color:#e6b800;}
 
-    /* ==========================
-       Header
-    =========================== */
-    .header {
-      background: #111;
-      color: #fff;
-      padding: 15px 20px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .header .logo {
-      font-size: 28px;
-    }
-    .header .logo span {
-      color: #e6b800;
-    }
-    .navbar a {
-      color: #fff;
-      margin-left: 20px;
-      transition: 0.3s;
-    }
-    .navbar a:hover {
-      color: #e6b800;
-    }
+    .services-page{padding:60px 20px;max-width:1200px;margin:auto;background:#fefefe;border-radius:15px;}
+    .services-page h2{text-align:center;font-size:36px;margin-bottom:50px;color:#222;}
 
-    /* ==========================
-       Services Section
-    =========================== */
-    .services-page {
-      padding: 60px 20px;
-      max-width: 1200px;
-      margin: auto;
-      background: linear-gradient(135deg, #fdf6f0, #f0f0f5);
-      border-radius: 15px;
-    }
-    .services-page h2 {
-      text-align: center;
-      font-size: 36px;
-      margin-bottom: 50px;
-      color: #222;
-    }
-    .service-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 30px;
-    }
-    .service-card {
-      display: flex;
-      background: #fff;
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .service-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-    }
-    .service-img {
-      flex: 1 1 40%;
-      overflow: hidden;
-    }
-    .service-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.3s;
-    }
-    .service-card:hover .service-img img {
-      transform: scale(1.05);
-    }
-    .service-info {
-      flex: 1 1 60%;
-      padding: 20px 25px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .service-info h4 {
-      font-size: 22px;
-      color: #111;
-      margin-bottom: 12px;
-      font-weight: 600;
-    }
-    .service-info p {
-      color: #555;
-      font-size: 16px;
-      flex-grow: 1;
-    }
-    .service-info .price {
-      font-weight: bold;
-      color: #e6b800;
-      margin-top: 10px;
-      font-size: 18px;
-    }
+    .service-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:30px;}
+    .service-card{display:flex;background:#fff;border-radius:15px;overflow:hidden;box-shadow:0 8px 25px rgba(0,0,0,0.08);}
+    .service-img img{width:100%;height:100%;object-fit:cover;}
+    .service-info{padding:20px;display:flex;flex-direction:column;justify-content:center;}
+    .service-info h4{font-size:22px;margin-bottom:10px;}
+    .price{color:#e6b800;font-weight:bold;margin-top:10px;font-size:18px;}
 
-    /* ==========================
-       Footer
-    =========================== */
-    .footer {
-      text-align: center;
-      padding: 30px 20px;
-      margin-top: 40px;
-      background: #111;
-      color: #eee;
+    .admin-btn{
+      display:inline-block;
+      padding:10px 15px;
+      background:#111;
+      color:white;
+      text-decoration:none;
+      border-radius:8px;
+      margin-bottom:20px;
     }
+    .admin-btn:hover{background:#e6b800;color:#111;}
 
-    /* ==========================
-       Responsive
-    =========================== */
-    @media(max-width: 992px) {
-      .service-card {
-        flex-direction: column;
-      }
-      .service-img, .service-info {
-        flex: unset;
-      }
-      .service-img {
-        height: 220px;
-      }
-    }
-    @media(max-width: 576px) {
-      .services-page {
-        padding: 40px 10px;
-      }
-    }
+    .footer{text-align:center;padding:30px;background:#111;color:#eee;margin-top:40px;}
   </style>
 </head>
 <body>
@@ -173,46 +58,31 @@
     </nav>
   </header>
 
-  <!-- Services Section -->
   <section class="services-page">
+
     <h2>Layanan Kami</h2>
+
+    <!-- Tombol menuju CRUD Admin -->
+    <a href="services/index.php" class="admin-btn">Kelola Layanan (CRUD Admin)</a>
+
     <div class="service-grid">
-      <div class="service-card">
-        <div class="service-img">
-          <img src="haircut.jpg" alt="Haircut Modern">
-        </div>
-        <div class="service-info">
-          <h4>Haircut Modern</h4>
-          <p>Gaya rambut klasik hingga kekinian.</p>
-          <span class="price">Rp 50.000</span>
-        </div>
-      </div>
 
+      <?php while($row = mysqli_fetch_assoc($query)): ?>
       <div class="service-card">
         <div class="service-img">
-          <img src="shaving.jpg" alt="Shaving & Beard">
+          <img src="img/<?= $row['image'] ?? 'default.jpg' ?>" alt="gambar layanan">
         </div>
         <div class="service-info">
-          <h4>Shaving & Beard</h4>
-          <p>Perawatan jenggot & kumis agar tampil rapi.</p>
-          <span class="price">Rp 30.000</span>
+          <h4><?= $row['name'] ?></h4>
+          <p>Durasi: <?= $row['duration'] ?> menit</p>
+          <span class="price">Rp <?= number_format($row['price']) ?></span>
         </div>
       </div>
+      <?php endwhile; ?>
 
-      <div class="service-card">
-        <div class="service-img">
-          <img src="coloring.jpg" alt="Hair Coloring">
-        </div>
-        <div class="service-info">
-          <h4>Hair Coloring</h4>
-          <p>Ganti warna rambut sesuai karakter kamu.</p>
-          <span class="price">Rp 70.000</span>
-        </div>
-      </div>
     </div>
   </section>
 
-  <!-- Footer -->
   <footer class="footer">
     <p>© 2025 Barbershop. All rights reserved.</p>
   </footer>

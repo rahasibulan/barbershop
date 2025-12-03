@@ -12,7 +12,7 @@ if (!isset($_SESSION['username']) || $_SESSION['level'] != 'admin') {
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Dashboard Admin - BarberBro</title>
+<title>Dashboard Admin - Barbershop</title>
 <style>
     body {
         margin: 0;
