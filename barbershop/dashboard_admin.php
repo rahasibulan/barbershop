@@ -87,7 +87,7 @@ if (!isset($_SESSION['username']) || $_SESSION['level'] != 'admin') {
 <body>
 
 <div class="sidebar">
-    <h2>BarberBro</h2>
+    <h2>Barbershop</h2>
     <a href="dashboard_admin.php">Dashboard</a>
     <a href="manage_users.php">Manajemen User</a>
     <a href="manage_services.php">Manajemen Layanan</a>

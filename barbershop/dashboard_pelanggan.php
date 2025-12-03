@@ -27,39 +27,43 @@ if(isset($_GET['logout'])){
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 body {
-  background: #f5f5f5;
+  background: #f0f2f5;
   color: #333;
   line-height: 1.6;
 }
 
-/* ===== Header ===== */
-header {
+/* ===== Navbar ===== */
+.navbar {
   background: #111;
   color: #fff;
-  padding: 15px 0;
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
 }
-header h1 {
-  font-size: 28px;
+.navbar h1 {
+  font-size: 24px;
 }
-header .logout {
-  margin-top: 5px;
-  display: inline-block;
-  background: #e6b800;
-  color: #111;
-  padding: 6px 15px;
-  border-radius: 5px;
+.navbar a {
+  color: #fff;
   text-decoration: none;
+  margin-left: 15px;
   font-weight: bold;
 }
-header .logout:hover {
+.navbar a.logout {
+  background: #e6b800;
+  color: #111;
+  padding: 6px 12px;
+  border-radius: 5px;
+}
+.navbar a.logout:hover {
   opacity: 0.8;
 }
 
 /* ===== Welcome ===== */
 .welcome {
   text-align: center;
-  margin: 30px 0;
+  margin: 30px 20px;
 }
 .welcome h2 {
   font-size: 28px;
@@ -70,33 +74,34 @@ header .logout:hover {
   color: #555;
 }
 
-/* ===== Layanan Grid ===== */
+/* ===== Services ===== */
 .services {
   max-width: 1200px;
-  margin: auto;
-  padding: 30px 20px;
+  margin: 30px auto;
+  padding: 0 20px;
 }
 .services h3 {
   text-align: center;
   font-size: 28px;
-  margin-bottom: 30px;
+  margin-bottom: 25px;
+  color: #111;
 }
 .service-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
-  gap: 25px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
 }
 .service-card {
   background: #fff;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
   transition: transform 0.3s, box-shadow 0.3s;
   text-align: center;
 }
 .service-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 .service-card img {
   width: 100%;
@@ -105,21 +110,21 @@ header .logout:hover {
 }
 .service-card h4 {
   font-size: 20px;
-  margin: 15px 0 10px 0;
+  margin: 15px 0 10px;
 }
 .service-card p {
   color: #555;
   margin-bottom: 15px;
 }
 
-/* ===== Booking Form ===== */
+/* ===== Booking ===== */
 .booking {
   max-width: 600px;
   margin: 40px auto;
-  padding: 20px;
+  padding: 25px;
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
 }
 .booking h3 {
   text-align: center;
@@ -132,10 +137,15 @@ header .logout:hover {
   gap: 15px;
 }
 .booking select, .booking input {
-  padding: 10px;
+  padding: 12px;
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 16px;
+  outline: none;
+  transition: 0.3s;
+}
+.booking select:focus, .booking input:focus {
+  border-color: #1e90ff;
 }
 .booking button {
   background: #e6b800;
@@ -151,7 +161,7 @@ header .logout:hover {
   opacity: 0.8;
 }
 
-/* ===== Riwayat Booking ===== */
+/* ===== History ===== */
 .history {
   max-width: 900px;
   margin: 40px auto;
@@ -168,7 +178,7 @@ header .logout:hover {
   background: #fff;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
 }
 .history th, .history td {
   padding: 12px;
@@ -192,17 +202,26 @@ header .logout:hover {
 </style>
 </head>
 <body>
-<header>
-  <h1>💈 BarberShop</h1>
-  <a href="?logout=true" class="logout">Logout</a>
-</header>
 
+<!-- Navbar -->
+<div class="navbar">
+  <h1>💈 BarberShop</h1>
+  <div>
+    <a href="#services">Layanan</a>
+    <a href="#booking">Booking</a>
+    <a href="#history">Riwayat</a>
+    <a href="?logout=true" class="logout">Logout</a>
+  </div>
+</div>
+
+<!-- Welcome -->
 <section class="welcome">
   <h2>Selamat Datang, <?php echo $_SESSION['username']; ?>!</h2>
   <p>Ini adalah dashboard pelanggan Anda.</p>
 </section>
 
-<section class="services">
+<!-- Services -->
+<section class="services" id="services">
   <h3>Layanan Kami</h3>
   <div class="service-grid">
     <div class="service-card">
@@ -223,14 +242,19 @@ header .logout:hover {
   </div>
 </section>
 
-<section class="booking">
+<!-- Booking -->
+<section class="booking" id="booking">
   <h3>Pesan Sekarang</h3>
   <form method="post" action="booking_process.php">
     <select name="service" required>
       <option value="">-- Pilih Layanan --</option>
-      <option value="haircut">Haircut Modern</option>
-      <option value="shaving">Shaving & Beard</option>
-      <option value="coloring">Hair Coloring</option>
+      <?php
+      include 'koneksi.php';
+      $query = mysqli_query($koneksi, "SELECT * FROM services ORDER BY nama ASC");
+      while($row = mysqli_fetch_assoc($query)){
+          echo "<option value='".$row['id']."'>".$row['nama']."</option>";
+      }
+      ?>
     </select>
     <input type="date" name="date" required>
     <input type="time" name="time" required>
@@ -238,38 +262,20 @@ header .logout:hover {
   </form>
 </section>
 
-<section class="history">
+<!-- History -->
+<section class="history" id="history">
   <h3>Riwayat Pesanan</h3>
-
   <table>
     <tr>
       <th>No</th>
       <th>Layanan</th>
       <th>Tanggal</th>
       <th>Jam</th>
-      <th>Status</th>
-      <th>Nota</th>
-    </tr>
-    
-    <tr>
-      <td>1</td>
-      <td>Haircut Modern</td>
-      <td>2025-12-01</td>
-      <td>10:00</td>
-      <td>Selesai</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>Shaving & Beard</td>
-      <td>2025-12-05</td>
-      <td>14:00</td>
-      <td>Menunggu</td>
     </tr>
 
     <?php
     include 'koneksi.php';
     $user = $_SESSION['username'];
-
     $no = 1;
     $query = mysqli_query($koneksi, "
         SELECT b.id, b.layanan_id, b.tanggal, b.jam, b.status, 
@@ -288,7 +294,6 @@ header .logout:hover {
         <td><?php echo $row['tanggal']; ?></td>
         <td><?php echo $row['jam']; ?></td>
         <td><?php echo ucfirst($row['status']); ?></td>
-
         <td>
             <?php if($row['status'] == 'selesai'): ?>
                 <a href="nota.php?id=<?php echo $row['id']; ?>" target="_blank"

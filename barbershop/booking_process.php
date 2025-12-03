@@ -2,23 +2,22 @@
 session_start();
 include 'koneksi.php';
 
-if(!isset($_SESSION['username']) || $_SESSION['level'] != 'pelanggan'){
-    header("Location: login.php");
-    exit();
-}
-
 if(isset($_POST['service'], $_POST['date'], $_POST['time'])){
-    $nama = $_SESSION['username'];
-    $layanan = mysqli_real_escape_string($koneksi, $_POST['service']);
-    $tanggal = $_POST['date'];
-    $jam = $_POST['time'];
+    $service = $_POST['service'];
+    $date = $_POST['date'];
+    $time = $_POST['time'];
+    $user = $_SESSION['username']; // nama pelanggan dari session
 
-    mysqli_query($koneksi, "INSERT INTO bookings (nama_pelanggan, layanan, tanggal, jam, status)
-                            VALUES ('$nama','$layanan','$tanggal','$jam','Menunggu')");
+    $insert = mysqli_query($koneksi, "
+        INSERT INTO bookings (layanan_id, nama_customer, tanggal, jam, status)
+        VALUES ('$service', '$user', '$date', '$time', 'Menunggu')
+    ");
 
-    header("Location: dashboard.php");
-    exit();
-}else{
-    echo "Data tidak lengkap!";
+    if($insert){
+        header("Location: dashboard_pelanggan.php");
+        exit();
+    } else {
+        echo "Gagal booking: " . mysqli_error($koneksi);
+    }
 }
 ?>

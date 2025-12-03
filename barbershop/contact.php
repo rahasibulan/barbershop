@@ -164,7 +164,7 @@
   <!-- Contact Section -->
   <section class="contact-page">
     <h2>Kontak Kami</h2>
-    <p>📍 Alamat: Jl. Contoh No. 12</p>
+    <p>📍 Alamat: Jl. samarang No. 12</p>
     <p>📞 WhatsApp: <a href="https://wa.me/628123456789" class="btn">Klik untuk chat</a></p>
     <p>🕒 Jam Operasional: 09.00 - 21.00</p>
 
